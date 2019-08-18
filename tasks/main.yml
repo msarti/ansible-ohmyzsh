@@ -1,0 +1,3 @@
+---
+# tasks file for ohmyzsh
+- import_tasks: install.yml
