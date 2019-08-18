@@ -1,4 +1,4 @@
 ---
 # defaults file for ohmyzsh
-ohmyzsh_users: { }
+ohmyzsh_users: {}
 ohmyzsh_theme: 'robbyrussell'

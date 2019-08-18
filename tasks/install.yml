@@ -1,5 +1,6 @@
-- name: Install software dependences
-  become: yes
+---
+- name: "Install software dependences"
+  become: true
   package:
     name: "{{item}}"
     state: present
@@ -7,37 +8,39 @@
     - zsh
     - git
 - name: Clone oh-my-zsh in the users directory
-  become: yes
-  command: 'git clone -c core.autocrlf=input --depth=1 https://github.com/robbyrussell/oh-my-zsh.git ~{{ item.username }}/.oh-my-zsh'
+  become: true
+  command: 'git clone -c core.autocrlf=input
+    --depth=1 https://github.com/robbyrussell/oh-my-zsh.git
+    ~{{ item.username }}/.oh-my-zsh'
   args:
     creates: '~{{ item.username }}/.oh-my-zsh'
   with_items: '{{ ohmyzsh_users }}'
-  when: ohmyzsh_users | length > 0      
+  when: ohmyzsh_users | length > 0
 - name: apply ownership and permissions
-  become: yes
+  become: true
   file:
     path: '~{{ item.username }}/.oh-my-zsh'
     owner: '{{ item.username }}'
     group: '{{ item.username }}'
     mode: 'go-w'
-    recurse: yes
+    recurse: true
   with_items: '{{ ohmyzsh_users }}'
   when: ohmyzsh_users | length > 0
 - name: Create .zshrc for users
-  become: yes
+  become: true
   template:
     src: zshrc.j2
     dest: '~{{ item.username }}/.zshrc'
-    backup: yes
+    backup: true
     owner: '{{ item.username }}'
     group: "{{ item.username  }}"
     mode: 'u=rw,go=r'
   with_items: '{{ ohmyzsh_users }}'
   when: (ohmyzsh_users | length > 0)
 - name: set default shell for users
-  become: yes
+  become: true
   user:
     name: '{{ item.username }}'
     shell: /bin/zsh
   with_items: '{{ ohmyzsh_users }}'
-  when: ohmyzsh_users | length > 0  
+  when: ohmyzsh_users | length > 0
